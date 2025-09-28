@@ -122,10 +122,10 @@
     {
         var body = new
         {
-            _name,
-            _studentCard
+            name = _name,
+            serial = _studentCard
         };
 
-        var response = await RabbitService.PublishMessageAsync("card.registration", body);
+        var response = await RabbitService.PublishMessageAsync("card.register", body);
     }
 }
