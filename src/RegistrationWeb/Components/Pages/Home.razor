@@ -1,0 +1,131 @@
+@inject RabbitService RabbitService;
+
+@page "/"
+@using Registration_Blazor.Services
+
+<PageTitle>UCL Registering</PageTitle>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        min-height: 100vh;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    }
+    
+    .form-control:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        border: none;
+    }
+    
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+</style>
+
+<div class="min-vh-100 d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8">
+                <div class="card border-0 shadow-lg">
+                    <!-- Header -->
+                    <div class="card-header bg-gradient-primary text-white text-center py-4 border-0">
+                        <div class="mb-3">
+                            <i class="fas fa-calendar-check fa-2x opacity-75"></i>
+                        </div>
+                        <h3 class="card-title mb-1 fw-bold">Event Registering</h3>
+                        <p class="mb-0 opacity-90">Tilmeld dig begivenheden</p>
+                    </div>
+                    
+                    <!-- Body -->
+                    <div class="card-body p-4">
+                        <form>
+                            <!-- Name Input -->
+                            <div class="mb-3">
+                                <label for="studentName" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-user me-2 text-primary"></i>
+                                    Fuld Navn
+                                </label>
+                                <input @bind-value="@_name" 
+                                       type="text" 
+                                       class="form-control form-control-lg border-2" 
+                                       id="studentName" 
+                                       placeholder="Indtast dit fulde navn...">
+                            </div>
+                            
+                            <!-- Student ID Input -->
+                            <div class="mb-4">
+                                <label for="studentId" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-id-card me-2 text-primary"></i>
+                                    Studiekort ID
+                                </label>
+                                <input @bind-value="_studentCard" 
+                                       type="text" 
+                                       class="form-control form-control-lg border-2" 
+                                       id="studentId" 
+                                       placeholder="f.eks. 6A:F6:E2:C0">
+                                <div class="form-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Format: XX:XX:XX:XX
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button @onclick="SendRegistrationAsync" 
+                                        type="button" 
+                                        class="btn btn-gradient btn-lg text-white fw-semibold py-3">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Tilmeld til begivenhed
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="card-footer bg-light border-0 text-center py-3">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Dine oplysninger behandles sikkert
+                        </small>
+                    </div>
+                </div>
+                
+                <!-- Success/Error Messages (you can add these later) -->
+                <div class="mt-3 text-center">
+                    <small class="text-white opacity-75">
+                        <i class="fas fa-clock me-1"></i>
+                        Registrering tager kun få sekunder
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _name = string.Empty;
+    private string _studentCard = string.Empty;
+    
+    private async Task SendRegistrationAsync()
+    {
+        var body = new
+        {
+            _name,
+            _studentCard
+        };
+
+        var response = await RabbitService.PublishMessageAsync("card.registration", body);
+    }
+}
