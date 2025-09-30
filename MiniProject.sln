@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36408.4
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11018.127 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationWeb", "src\RegistrationWeb\RegistrationWeb.csproj", "{94393738-54D8-443F-9307-59461A63E698}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NFCServiceLibrary", "NFCServiceLibrary\NFCServiceLibrary.csproj", "{FF16D042-EF3E-42F0-91E6-78ADE630A3BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardReaderConsole", "CardReaderConsole\CardReaderConsole.csproj", "{E9E7162D-E6D8-4349-9B7A-2B438489711A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidationService", "ValidationService\ValidationService.csproj", "{6F5C8191-C8CA-4D94-AF58-E1D68DE0D1AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E9E7162D-E6D8-4349-9B7A-2B438489711A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9E7162D-E6D8-4349-9B7A-2B438489711A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9E7162D-E6D8-4349-9B7A-2B438489711A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F5C8191-C8CA-4D94-AF58-E1D68DE0D1AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F5C8191-C8CA-4D94-AF58-E1D68DE0D1AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F5C8191-C8CA-4D94-AF58-E1D68DE0D1AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F5C8191-C8CA-4D94-AF58-E1D68DE0D1AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

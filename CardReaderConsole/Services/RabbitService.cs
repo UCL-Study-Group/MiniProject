@@ -22,7 +22,7 @@ namespace CardReaderConsole.Services
         public event EventHandler<ValidationModel> ValidationResponseRecieved;
 
         private const string ValidationExchange = "validation.exchange";
-        private string? replyQueueName = null;
+        private string replyQueueName = "validation.response";
 
         private async Task InitializeAsync()
         {
