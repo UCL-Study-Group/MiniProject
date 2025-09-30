@@ -4,6 +4,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,7 @@ namespace CardReaderConsole.Services
         public event EventHandler<ValidationModel> ValidationResponseRecieved;
 
         private const string ValidationExchange = "validation.exchange";
-        private const string ValidationResponseExchange = "validation.Response.exchange";
-        private const string ValidationResponseQueue = "validation.Response.queue";
+        private string? replyQueueName = null;
 
         private async Task InitializeAsync()
         {
@@ -55,11 +55,15 @@ namespace CardReaderConsole.Services
 
         private async Task SetupValidationResponseQueue()
         {
-            await _channel.ExchangeDeclareAsync(ValidationResponseExchange, ExchangeType.Direct, durable: false);
-
-            await _channel.QueueDeclareAsync(ValidationResponseQueue, durable: false);
-
-            await _channel.QueueBindAsync(ValidationResponseQueue, ValidationResponseExchange, "Validation.Response");
+            if (replyQueueName is null)
+            {
+                var queueDeclareResult = await _channel.QueueDeclareAsync(durable: false);
+                replyQueueName = queueDeclareResult.QueueName;
+            }
+            else
+            {
+                await _channel.QueueDeclareAsync(replyQueueName, durable: false);
+            }
         }
 
         public async Task<Result> PublishMessageAsync(string route, object body)
@@ -77,7 +81,7 @@ namespace CardReaderConsole.Services
                 BasicProperties props = new();
 
                 props.CorrelationId = Guid.NewGuid().ToString();
-                props.ReplyTo = ValidationResponseExchange;
+                props.ReplyTo = replyQueueName;
 
                 await _channel.BasicPublishAsync(
                     exchange: ValidationExchange, 
@@ -107,7 +111,7 @@ namespace CardReaderConsole.Services
 
             _consumer.ReceivedAsync += OnValidationResponse;
 
-            await _channel.BasicConsumeAsync(ValidationResponseQueue, autoAck: true, _consumer);
+            await _channel.BasicConsumeAsync(replyQueueName, autoAck: true, _consumer);
             return Result.Ok();
         }
 
@@ -115,6 +119,7 @@ namespace CardReaderConsole.Services
         {
             try
             {
+                var correlationId = @event.BasicProperties.CorrelationId;
                 var message = Encoding.UTF8.GetString(@event.Body.ToArray());
                 var validation = JsonSerializer.Deserialize<ValidationModel>(message);
 
