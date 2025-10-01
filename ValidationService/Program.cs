@@ -45,7 +45,7 @@ internal class Program
     await channel.QueueBindAsync(RegistrationQueue, RegistrationExchange, "card.register");
 
     await channel.QueueDeclareAsync(ValidationQueue, durable: false, exclusive: false);
-    await channel.QueueBindAsync(ValidationQueue, ValidationExchange, "validation.response");
+    await channel.QueueBindAsync(ValidationQueue, ValidationExchange, "card.validate");
 
     //Create consumers
 
