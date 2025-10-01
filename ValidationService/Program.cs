@@ -57,10 +57,8 @@ internal class Program
         {
             try
             {
-
                 var body = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var registration = JsonSerializer.Deserialize<Registration>(body);
-
 
                 RegisteredIds.Add(registration.Serial);
             }

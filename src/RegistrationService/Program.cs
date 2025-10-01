@@ -42,7 +42,7 @@ internal class Program
             }
         };
         
-        await channel.BasicConsumeAsync(RegistrationQueue, true, consumer);
+        await channel.BasicConsumeAsync(RegistrationQueue, false, consumer);
 
         while (true)
         {
@@ -83,8 +83,6 @@ internal class Program
         var body = Encoding.UTF8.GetString(ea.Body.ToArray());
 
         var parsed = JsonSerializer.Deserialize<Registration>(body);
-
-        var bytes = parsed?.GetParsedSerial;
     }
 
     private static async Task HandleInvalidAsync(BasicDeliverEventArgs ea, IChannel channel, Exception ex)
