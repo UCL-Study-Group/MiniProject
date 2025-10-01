@@ -44,7 +44,7 @@ internal class Program
     await channel.QueueDeclareAsync(RegistrationQueue, false, false, false);
     await channel.QueueBindAsync(RegistrationQueue, RegistrationExchange, "card.register");
 
-    await channel.QueueDeclareAsync(ValidationQueue, false, false, false);
+    await channel.QueueDeclareAsync(ValidationQueue, durable: false, exclusive: false);
     await channel.QueueBindAsync(ValidationQueue, ValidationExchange, "validation.response");
 
     //Create consumers
@@ -53,22 +53,23 @@ internal class Program
 
     var validationConsumer = new AsyncEventingBasicConsumer(channel);
 
-    registrationConsumer.ReceivedAsync += async (model, ea) =>
-    {
-      try
-      {
+        registrationConsumer.ReceivedAsync += async (model, ea) =>
+        {
+            try
+            {
 
-        var body = Encoding.UTF8.GetString(ea.Body.ToArray());
-        var registration = JsonSerializer.Deserialize<Registration>(body);
+                var body = Encoding.UTF8.GetString(ea.Body.ToArray());
+                var registration = JsonSerializer.Deserialize<Registration>(body);
 
 
-        RegisteredIds.Add(registration.Serial);
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine($"Error when receiving registration: {ex.Message}");
-        await HandleInvalidAsync(ea, channel, ex);
-      }
+                RegisteredIds.Add(registration.Serial);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error when receiving registration: {ex.Message}");
+                await HandleInvalidAsync(ea, channel, ex);
+            }
+        };
 
       validationConsumer.ReceivedAsync += async (model, ea) =>
       {
@@ -101,7 +102,6 @@ internal class Program
             await PublishResponse(validationResponse, channel, replyProps);
 
           }
-
           else
           {
             Console.WriteLine($"Found {idToCheck} in registration. They have now checked in.");
@@ -115,7 +115,6 @@ internal class Program
             validationResponse.ValidatedTime = DateTime.Now;
             validationResponse.ValidationStatus = "Valid";
             await PublishResponse(validationResponse, channel, replyProps);
-
           }
         }
         catch (Exception ex)
@@ -123,16 +122,16 @@ internal class Program
           Console.WriteLine($"Something went wrong when validating id: {ex.Message}");
           await HandleInvalidAsync(ea, channel, ex);
         }
-
       };
 
       await channel.BasicConsumeAsync(ValidationQueue, autoAck: true, validationConsumer);
 
       await channel.BasicConsumeAsync(RegistrationQueue, autoAck: true, registrationConsumer);
 
-    };
+        Console.ReadLine();
+    }
 
-  }
+  
 
   private static async Task PublishResponse(Validation validation, IChannel channel, BasicProperties props)
   {

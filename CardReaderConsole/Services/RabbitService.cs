@@ -22,7 +22,7 @@ namespace CardReaderConsole.Services
         public event EventHandler<ValidationModel> ValidationResponseRecieved;
 
         private const string ValidationExchange = "validation.exchange";
-        private string replyQueueName = "validation.response";
+        private string? replyQueueName = null;
 
         private async Task InitializeAsync()
         {
@@ -57,7 +57,7 @@ namespace CardReaderConsole.Services
         {
             if (replyQueueName is null)
             {
-                var queueDeclareResult = await _channel.QueueDeclareAsync(durable: false);
+                var queueDeclareResult = await _channel.QueueDeclareAsync(durable: false, exclusive: false);
                 replyQueueName = queueDeclareResult.QueueName;
             }
             else
