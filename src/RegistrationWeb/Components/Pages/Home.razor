@@ -97,7 +97,7 @@
                     <div class="card-footer bg-light border-0 text-center py-3">
                         <small class="text-muted">
                             <i class="fas fa-shield-alt me-1"></i>
-                            Dine oplysninger behandles sikkert
+                            Dine oplysninger behandles ikke sikkert
                         </small>
                     </div>
                 </div>
@@ -127,5 +127,6 @@
         };
 
         var response = await RabbitService.PublishMessageAsync("card.register", body);
+        var response2 = await RabbitService.PublishMessageAsync("card.register", body);
     }
 }

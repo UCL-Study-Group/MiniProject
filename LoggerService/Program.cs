@@ -39,7 +39,7 @@ internal class Program
             return Task.CompletedTask;
         };
         
-        await channel.BasicConsumeAsync(InvalidQueue, autoAck: true, consumer);
+        await channel.BasicConsumeAsync(InvalidQueue, autoAck: false, consumer);
         
         Console.WriteLine("Listening for messages...");
         
